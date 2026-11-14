@@ -5,7 +5,10 @@ import Config
 
 # Configure the endpoint for production
 config :my_app, MyAppWeb.Endpoint,
-  url: [host: System.get_env("PHX_HOST", "example.com"), port: String.to_integer(System.get_env("PHX_PORT", "4000"))],
+  url: [
+    host: System.get_env("PHX_HOST", "example.com"),
+    port: String.to_integer(System.get_env("PHX_PORT", "4000"))
+  ],
   http: [
     ip: {0, 0, 0, 0, 0, 0, 0, 0},
     port: String.to_integer(System.get_env("PHX_PORT", "4000"))
@@ -36,5 +39,4 @@ config :my_app, MyApp.VideoAnalysis.PythonPort,
   timeout_ms: 30 * 60 * 1000
 
 # Configure MediaPipe model path
-config :my_app, MyApp.MediaPipe,
-  model_path: "priv/models/pose_landmarker_lite.task"
+config :my_app, MyApp.MediaPipe, model_path: "priv/models/pose_landmarker_lite.task"

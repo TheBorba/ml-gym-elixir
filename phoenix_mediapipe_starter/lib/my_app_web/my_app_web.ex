@@ -63,5 +63,3 @@ defmodule MyAppWeb do
     end
   end
 end
-
-

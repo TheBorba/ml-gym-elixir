@@ -61,5 +61,5 @@ RUN sh priv/python/setup_venv.sh
 RUN mix compile
 
 # Create the database, migrate, and serve.
-CMD ["sh", "-c", "mix ecto.create --quiet && mix ecto.migrate --quiet && mix phx.server"]
+CMD ["sh", "-c", "mix ecto.create --quiet || true && mix ecto.migrate --quiet && mix phx.server"]
 

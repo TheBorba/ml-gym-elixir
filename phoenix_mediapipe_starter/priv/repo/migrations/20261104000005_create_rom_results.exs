@@ -10,19 +10,19 @@ defmodule MyApp.Repo.Migrations.CreateRomResults do
 
   def change do
     create table(:rom_results) do
-      add :analysis_id, references(:analyses, on_delete: :delete_all), null: false
-      add :joint, :string, null: false
-      add :coordinate_system, :string, null: false
-      add :sample_count, :integer, null: false, default: 0
-      add :min_angle, :float
-      add :max_angle, :float
-      add :rom_degrees, :float
-      add :repetitions, :integer, null: false, default: 0
+      add(:analysis_id, references(:analyses, on_delete: :delete_all), null: false)
+      add(:joint, :string, null: false)
+      add(:coordinate_system, :string, null: false)
+      add(:sample_count, :integer, null: false, default: 0)
+      add(:min_angle, :float)
+      add(:max_angle, :float)
+      add(:rom_degrees, :float)
+      add(:repetitions, :integer, null: false, default: 0)
 
       timestamps(type: :utc_datetime_usec)
     end
 
-    create index(:rom_results, [:analysis_id])
-    create unique_index(:rom_results, [:analysis_id, :joint, :coordinate_system])
+    create(index(:rom_results, [:analysis_id]))
+    create(unique_index(:rom_results, [:analysis_id, :joint, :coordinate_system]))
   end
 end

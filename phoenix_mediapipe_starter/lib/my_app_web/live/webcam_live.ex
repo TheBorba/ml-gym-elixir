@@ -129,4 +129,3 @@ defmodule MyAppWeb.WebcamLive do
     end
   end
 end
-

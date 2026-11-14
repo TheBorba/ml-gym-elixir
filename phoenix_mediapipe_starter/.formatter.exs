@@ -1,0 +1,4 @@
+[
+  import_deps: [:phoenix, :phoenix_live_view],
+  inputs: ["mix.exs", "{config,lib,test,priv}/**/*.{ex,exs}"]
+]

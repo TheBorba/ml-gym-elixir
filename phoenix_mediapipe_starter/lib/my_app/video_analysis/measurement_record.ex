@@ -20,14 +20,14 @@ defmodule MyApp.Measurement do
   @type t :: %__MODULE__{}
 
   schema "measurements" do
-    field :joint, :string
-    field :coordinate_system, :string
-    field :quality, :string, default: "usable"
-    field :angle_degrees, :float
-    field :timestamp_ms, :integer
+    field(:joint, :string)
+    field(:coordinate_system, :string)
+    field(:quality, :string, default: "usable")
+    field(:angle_degrees, :float)
+    field(:timestamp_ms, :integer)
 
-    belongs_to :analysis, Analysis
-    belongs_to :frame, Frame
+    belongs_to(:analysis, Analysis)
+    belongs_to(:frame, Frame)
 
     timestamps(type: :utc_datetime_usec, updated_at: false)
   end

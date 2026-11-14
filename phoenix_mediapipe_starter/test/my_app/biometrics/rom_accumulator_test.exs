@@ -75,13 +75,13 @@ defmodule MyApp.Biometrics.RomAccumulatorTest do
       assert RomAccumulator.rom(merged) == 75.0
     end
 
-    test "raises on a mismatched joint or coordinate system" do
+    test "returns {:error, :mismatched_joint_or_coordinate_system} on mismatch" do
       knee = RomAccumulator.new("left_knee", :world_3d)
       hip = RomAccumulator.new("left_hip", :world_3d)
       image = RomAccumulator.new("left_knee", :image_normalized)
 
-      assert_raise FunctionClauseError, fn -> RomAccumulator.merge(knee, hip) end
-      assert_raise FunctionClauseError, fn -> RomAccumulator.merge(knee, image) end
+      assert RomAccumulator.merge(knee, hip) == {:error, :mismatched_joint_or_coordinate_system}
+      assert RomAccumulator.merge(knee, image) == {:error, :mismatched_joint_or_coordinate_system}
     end
   end
 

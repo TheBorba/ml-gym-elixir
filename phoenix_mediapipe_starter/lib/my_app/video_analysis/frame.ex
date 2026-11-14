@@ -15,12 +15,12 @@ defmodule MyApp.Frame do
   @type t :: %__MODULE__{}
 
   schema "frames" do
-    field :frame_index, :integer
-    field :timestamp_ms, :integer
-    field :image_landmarks, {:array, :map}
-    field :world_landmarks, {:array, :map}
+    field(:frame_index, :integer)
+    field(:timestamp_ms, :integer)
+    field(:image_landmarks, {:array, :map})
+    field(:world_landmarks, {:array, :map})
 
-    belongs_to :analysis, Analysis
+    belongs_to(:analysis, Analysis)
 
     timestamps(type: :utc_datetime_usec, updated_at: false)
   end

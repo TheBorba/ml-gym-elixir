@@ -11,16 +11,16 @@ defmodule MyApp.Repo.Migrations.CreateFrames do
 
   def change do
     create table(:frames) do
-      add :analysis_id, references(:analyses, on_delete: :delete_all), null: false
-      add :frame_index, :integer, null: false
-      add :timestamp_ms, :integer, null: false
-      add :image_landmarks, :map
-      add :world_landmarks, :map
+      add(:analysis_id, references(:analyses, on_delete: :delete_all), null: false)
+      add(:frame_index, :integer, null: false)
+      add(:timestamp_ms, :integer, null: false)
+      add(:image_landmarks, :map)
+      add(:world_landmarks, :map)
 
       timestamps(type: :utc_datetime_usec, updated_at: false)
     end
 
-    create index(:frames, [:analysis_id])
-    create unique_index(:frames, [:analysis_id, :frame_index])
+    create(index(:frames, [:analysis_id]))
+    create(unique_index(:frames, [:analysis_id, :frame_index]))
   end
 end

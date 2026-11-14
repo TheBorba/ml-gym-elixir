@@ -27,6 +27,3 @@ defmodule MyAppWeb.Router do
     get "/health", HealthController, :index
   end
 end
-
-
-

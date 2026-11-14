@@ -133,4 +133,3 @@ defmodule MyApp.Biometrics.Measurement do
     is_nil(landmark.visibility) or landmark.visibility >= @minimum_visibility
   end
 end
-

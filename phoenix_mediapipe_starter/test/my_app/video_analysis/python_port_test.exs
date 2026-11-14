@@ -78,5 +78,45 @@ defmodule MyApp.VideoAnalysis.PythonPortTest do
 
       assert PythonPort.run(video, "/tmp/does-not-exist.task") == {:error, :model_missing}
     end
+
+    test "returns all records emitted by the worker" do
+      tmp =
+        Path.join(System.tmp_dir!(), "python_port_run_test_#{System.unique_integer([:positive])}")
+
+      File.mkdir_p!(tmp)
+
+      data = Path.join(tmp, "records.jsonl")
+      fake_python = Path.join(tmp, "fake_python.sh")
+
+      File.write!(
+        data,
+        Enum.join(
+          [
+            %{type: "frame", frame_index: 0},
+            %{type: "frame", frame_index: 1},
+            %{type: "complete", processed_frames: 2}
+          ],
+          "\n"
+        ) <> "\n"
+      )
+
+      File.write!(fake_python, "#!/bin/sh\ncat #{data}\n")
+      File.chmod!(fake_python, 0o755)
+      on_exit(fn -> File.rm_rf!(tmp) end)
+
+      previous = Application.get_env(:my_app, PythonPort, [])
+
+      Application.put_env(:my_app, PythonPort,
+        python_bin: fake_python,
+        venv_python: nil,
+        script: fake_python
+      )
+
+      on_exit(fn -> Application.put_env(:my_app, PythonPort, previous) end)
+
+      assert {:ok, records} = PythonPort.run("/tmp/any-video.mp4", "/tmp/any-model.task")
+      assert length(records) == 3
+      assert Enum.any?(records, &(%{type: "complete"} in &1))
+    end
   end
 end

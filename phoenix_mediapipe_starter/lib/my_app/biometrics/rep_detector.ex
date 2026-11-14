@@ -79,9 +79,15 @@ defmodule MyApp.Biometrics.RepDetector do
     }
 
     cond do
-      det.state == :unknown and extended?(det, angle) -> %__MODULE__{det | state: :extended}
-      det.state == :unknown and flexed?(det, angle) -> %__MODULE__{det | state: :flexed}
-      det.state == :extended and flexed?(det, angle) -> %__MODULE__{det | state: :flexed}
+      det.state == :unknown and extended?(det, angle) ->
+        %__MODULE__{det | state: :extended}
+
+      det.state == :unknown and flexed?(det, angle) ->
+        %__MODULE__{det | state: :flexed}
+
+      det.state == :extended and flexed?(det, angle) ->
+        %__MODULE__{det | state: :flexed}
+
       # Completing a repetition: flexed -> extended.
       det.state == :flexed and extended?(det, angle) ->
         %__MODULE__{det | state: :extended, count: det.count + 1}

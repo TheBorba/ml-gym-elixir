@@ -9,8 +9,15 @@ defmodule MyApp.Biometrics.Landmark do
 
   @enforce_keys [:name, :x, :y, :coordinate_system]
   defstruct [
-    :name, :x, :y, :z, :visibility, :presence,
-    :coordinate_system, :timestamp_ms, :model
+    :name,
+    :x,
+    :y,
+    :z,
+    :visibility,
+    :presence,
+    :coordinate_system,
+    :timestamp_ms,
+    :model
   ]
 
   @type coordinate_system :: :image_normalized | :world_3d

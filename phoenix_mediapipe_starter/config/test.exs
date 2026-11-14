@@ -13,7 +13,6 @@ config :my_app, MyApp.Repo,
   pool: Ecto.Adapters.SQL.Sandbox,
   pool_size: 10
 
-
 # Configure Oban for tests: manual execution keeps jobs from running
 # asynchronously inside the Ecto SQL sandbox.
 config :my_app, Oban,
@@ -32,4 +31,3 @@ config :my_app, MyApp.VideoAnalysis.PythonPort,
   batch_size: 200,
   port_buffer: 1_000_000,
   timeout_ms: 30 * 1000
-

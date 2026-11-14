@@ -25,18 +25,20 @@ defmodule MyAppWeb.Endpoint do
     longpolling: [connect_info: [session: @session_options]]
 
   plug Plug.RequestId
+
   plug Plug.Static,
     at: "/assets",
     from: "priv/static/assets",
     gzip: false,
     only: ~w(pose_worker.js app.js app.css)
+
   plug Plug.Parsers,
     parsers: [:urlencoded, :multipart, :json],
     pass: ["*/*"],
     json_decoder: Phoenix.json_library()
+
   plug Plug.MethodOverride
   plug Plug.Head
   plug Plug.Session, @session_options
   plug MyAppWeb.Router
 end
-
