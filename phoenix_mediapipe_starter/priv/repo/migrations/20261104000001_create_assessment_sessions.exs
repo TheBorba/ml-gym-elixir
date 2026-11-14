@@ -11,12 +11,12 @@ defmodule MyApp.Repo.Migrations.CreateAssessmentSessions do
 
   def change do
     create table(:assessment_sessions) do
-      add :patient_ref, :string
-      add :notes, :text
+      add(:patient_ref, :string)
+      add(:notes, :text)
 
       timestamps(type: :utc_datetime_usec)
     end
 
-    create index(:assessment_sessions, [:patient_ref])
+    create(index(:assessment_sessions, [:patient_ref]))
   end
 end

@@ -40,7 +40,7 @@ defmodule MyApp.VideoAnalysis.PythonPort do
   Returns `{:ok, records}` or `{:error, reason}`.
   """
   def run(video_path, model_path, opts \\ []) do
-    stream(video_path, model_path, fn _record -> :ok end, opts)
+    stream(video_path, model_path, fn record -> :keep end, opts)
     |> case do
       {:ok, _count, records} -> {:ok, records}
       {:error, reason} -> {:error, reason}
@@ -91,7 +91,7 @@ defmodule MyApp.VideoAnalysis.PythonPort do
           ]
         ])
 
-      collect(port, fun, [], 0, timeout)
+      collect(port, fun, [], 0, nil, timeout)
     end
   catch
     kind, reason ->
@@ -144,33 +144,40 @@ defmodule MyApp.VideoAnalysis.PythonPort do
 
   defp ensure_regular(_path, error), do: {:error, error}
 
-  defp collect(port, fun, kept, count, timeout) do
+  defp collect(port, fun, kept, count, error_msg, timeout) do
     receive do
       {^port, {:data, {:eol, line}}} ->
-        {kept, count} =
+        {kept, count, error_msg} =
           case Jason.decode(line) do
             {:ok, record} ->
               case fun.(record) do
-                :keep -> {[record | kept], count + 1}
-                _ -> {kept, count + 1}
+                :keep -> {[record | kept], count + 1, error_msg}
+                _ -> {kept, count + 1, error_msg}
               end
 
             {:error, _} ->
+              error_msg =
+                if String.starts_with?(line, "pose_worker_error:") do
+                  String.trim_leading(line, "pose_worker_error:") |> String.trim()
+                else
+                  error_msg
+                end
+
               Logger.debug("PythonPort skipped non-JSON line: #{inspect(line)}")
-              {kept, count}
+              {kept, count, error_msg}
           end
 
-        collect(port, fun, kept, count, timeout)
+        collect(port, fun, kept, count, error_msg, timeout)
 
       {^port, {:data, {:noeol, partial}}} ->
         Logger.debug("PythonPort partial line: #{inspect(partial)}")
-        collect(port, fun, kept, count, timeout)
+        collect(port, fun, kept, count, error_msg, timeout)
 
       {^port, {:exit_status, 0}} ->
         {:ok, count, Enum.reverse(kept)}
 
       {^port, {:exit_status, status}} ->
-        {:error, {:python_worker_exit, status}}
+        {:error, {:python_worker_exit, status, error_msg}}
     after
       timeout ->
         Port.close(port)
@@ -178,4 +185,3 @@ defmodule MyApp.VideoAnalysis.PythonPort do
     end
   end
 end
-

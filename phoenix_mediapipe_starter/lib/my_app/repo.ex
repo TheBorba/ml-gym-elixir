@@ -16,4 +16,3 @@ defmodule MyApp.Repo do
     repo: MyApp.Repo,
     adapter: Ecto.Adapters.Postgres
 end
-

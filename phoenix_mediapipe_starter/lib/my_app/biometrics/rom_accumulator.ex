@@ -63,10 +63,13 @@ defmodule MyApp.Biometrics.RomAccumulator do
   @doc """
   Merges two accumulators for the same joint and coordinate system.
   """
-  def merge(%__MODULE__{joint: joint, coordinate_system: cs} = left, %__MODULE__{
-        joint: joint,
-        coordinate_system: cs
-      } = right) do
+  def merge(
+        %__MODULE__{joint: joint, coordinate_system: cs} = left,
+        %__MODULE__{
+          joint: joint,
+          coordinate_system: cs
+        } = right
+      ) do
     %__MODULE__{
       left
       | sample_count: left.sample_count + right.sample_count,
@@ -74,6 +77,8 @@ defmodule MyApp.Biometrics.RomAccumulator do
         max_angle: max_or(left.max_angle, right.max_angle)
     }
   end
+
+  def merge(_left, _right), do: {:error, :mismatched_joint_or_coordinate_system}
 
   @doc """
   Angular travel in degrees, or `nil` when fewer than two distinct samples

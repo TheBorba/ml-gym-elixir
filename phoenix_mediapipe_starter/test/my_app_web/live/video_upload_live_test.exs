@@ -33,7 +33,9 @@ defmodule MyAppWeb.VideoUploadLiveTest do
 
   describe "save event" do
     test "stores the upload, inserts an analysis and enqueues the worker", %{conn: conn} do
-      tmp = Path.join(System.tmp_dir!(), "my_app_upload_test_#{System.unique_integer([:positive])}")
+      tmp =
+        Path.join(System.tmp_dir!(), "my_app_upload_test_#{System.unique_integer([:positive])}")
+
       File.mkdir_p!(tmp)
       model = Path.join(tmp, "pose_landmarker_lite.task")
       File.write!(model, "placeholder model bundle")

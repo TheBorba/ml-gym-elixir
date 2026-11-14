@@ -17,7 +17,9 @@ defmodule MyApp.Biometrics.Normalizer do
     |> Enum.with_index()
     |> Enum.reduce(%{}, fn {point, index}, acc ->
       case Enum.at(@names, index) do
-        nil -> acc
+        nil ->
+          acc
+
         name ->
           landmark = %Landmark{
             name: name,

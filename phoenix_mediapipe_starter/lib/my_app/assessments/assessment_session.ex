@@ -14,10 +14,10 @@ defmodule MyApp.AssessmentSession do
   @type t :: %__MODULE__{}
 
   schema "assessment_sessions" do
-    field :patient_ref, :string
-    field :notes, :string
+    field(:patient_ref, :string)
+    field(:notes, :string)
 
-    has_many :analyses, Analysis, foreign_key: :assessment_session_id
+    has_many(:analyses, Analysis, foreign_key: :assessment_session_id)
 
     timestamps(type: :utc_datetime_usec)
   end

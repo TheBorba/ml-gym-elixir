@@ -17,22 +17,22 @@ defmodule MyApp.Analysis do
   @type t :: %__MODULE__{}
 
   schema "analyses" do
-    field :status, :string, default: "pending"
-    field :source, :string, default: "mp4"
-    field :video_path, :string
-    field :model_path, :string
-    field :sample_fps, :float
-    field :source_fps, :float
-    field :source_frames, :integer
-    field :processed_frames, :integer, default: 0
-    field :error, :string
-    field :started_at, :utc_datetime_usec
-    field :finished_at, :utc_datetime_usec
+    field(:status, :string, default: "pending")
+    field(:source, :string, default: "mp4")
+    field(:video_path, :string)
+    field(:model_path, :string)
+    field(:sample_fps, :float)
+    field(:source_fps, :float)
+    field(:source_frames, :integer)
+    field(:processed_frames, :integer, default: 0)
+    field(:error, :string)
+    field(:started_at, :utc_datetime_usec)
+    field(:finished_at, :utc_datetime_usec)
 
-    belongs_to :assessment_session, AssessmentSession
-    has_many :frames, Frame
-    has_many :measurements, Measurement
-    has_many :rom_results, RomResult
+    belongs_to(:assessment_session, AssessmentSession)
+    has_many(:frames, Frame)
+    has_many(:measurements, Measurement)
+    has_many(:rom_results, RomResult)
 
     timestamps(type: :utc_datetime_usec)
   end

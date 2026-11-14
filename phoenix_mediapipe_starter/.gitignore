@@ -1,0 +1,32 @@
+# Elixir / Erlang
+_build/
+deps/
+.erlang.crash.dump
+elixir_crash.dump
+*.ez
+doc/
+cover/
+/priv/uploads/
+
+# Mix.lock is intentionally committed for reproducible builds.
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.env
+.python-version
+.pytest_cache/
+.mypy_cache/
+priv/python/.venv/
+
+# Node / assets
+/node_modules/
+/assets/css/
+/assets/js/
+
+# OS
+.DS_Store
+Thumbs.db

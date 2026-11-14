@@ -32,7 +32,10 @@ defmodule MyApp.Uploads do
   """
   def store(%Plug.Upload{path: source, filename: filename}) do
     destination =
-      Path.join(dir(), "#{Base.url_encode64(:crypto.strong_rand_bytes(12), padding: false)}#{ext(filename)}")
+      Path.join(
+        dir(),
+        "#{Base.url_encode64(:crypto.strong_rand_bytes(12), padding: false)}#{ext(filename)}"
+      )
 
     File.cp!(source, destination)
     {:ok, destination}

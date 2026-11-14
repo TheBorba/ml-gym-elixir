@@ -8,7 +8,9 @@ defmodule MyApp.VideoAnalysis.AnalysisWorkerTest do
   @frame_count 5
 
   setup do
-    tmp = Path.join(System.tmp_dir!(), "analysis_worker_test_#{System.unique_integer([:positive])}")
+    tmp =
+      Path.join(System.tmp_dir!(), "analysis_worker_test_#{System.unique_integer([:positive])}")
+
     File.mkdir_p!(tmp)
 
     video = Path.join(tmp, "clip.mp4")
@@ -86,7 +88,11 @@ defmodule MyApp.VideoAnalysis.AnalysisWorkerTest do
   test "marks the analysis failed when the worker cannot start", %{video: video, model: model} do
     analysis = insert_analysis!(video, model)
 
-    Application.put_env(:my_app, PythonPort, python_bin: nil, venv_python: nil, script: "missing.py")
+    Application.put_env(:my_app, PythonPort,
+      python_bin: nil,
+      venv_python: nil,
+      script: "missing.py"
+    )
 
     job = %Oban.Job{
       args: %{"analysis_id" => analysis.id, "video_path" => video, "model_path" => model}

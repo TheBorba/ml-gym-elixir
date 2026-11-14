@@ -98,10 +98,14 @@ defmodule MyAppWeb.CoreComponents do
   attr :id, :string, required: true
   attr :label, :string, required: true
   attr :accept, :string, default: "video/mp4,video/x-m4v,video/quicktime"
-  attr :target, :string, default: nil,
+
+  attr :target, :string,
+    default: nil,
     doc: "the upload ref this dropzone belongs to (`@uploads.<name>.ref`)"
 
-  attr :class, :string, default: "border-2 border-dashed border-gray-300 rounded-lg p-8 text-center cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-colors"
+  attr :class, :string,
+    default:
+      "border-2 border-dashed border-gray-300 rounded-lg p-8 text-center cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-colors"
 
   slot :inner_block, required: false
 

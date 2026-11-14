@@ -42,12 +42,10 @@ config :my_app, MyApp.VideoAnalysis.PythonPort,
 
 # Where uploaded MP4s are written. Kept outside priv/static so files are
 # never served publicly.
-config :my_app, MyApp.Uploads,
-  dir: System.get_env("UPLOAD_DIR") || "priv/uploads"
+config :my_app, MyApp.Uploads, dir: System.get_env("UPLOAD_DIR") || "priv/uploads"
 
 # Configure MediaPipe model path
-config :my_app, MyApp.MediaPipe,
-  model_path: "priv/models/pose_landmarker_lite.task"
+config :my_app, MyApp.MediaPipe, model_path: "priv/models/pose_landmarker_lite.task"
 
 # Configures the endpoint
 config :my_app, MyAppWeb.Endpoint,
@@ -72,4 +70,3 @@ config :my_app, MyAppWeb.Endpoint,
 # Import environment-specific config. Must stay at the bottom so it can
 # override the defaults above.
 import_config "#{config_env()}.exs"
-
