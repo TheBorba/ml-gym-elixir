@@ -1,0 +1,22 @@
+# Build artifacts and host-only state are never needed in the image.
+.git
+.gitignore
+_build/
+deps/
+dist/
+cover/
+doc/
+*.beam
+erl_crash.dump
+
+# The virtualenv is created inside the image, never copied in.
+priv/python/.venv/
+
+# Runtime state created by the app.
+priv/uploads/
+
+# Editor/OS noise
+.DS_Store
+*.swp
+.vscode/
+.idea/

@@ -1,0 +1,31 @@
+# Pinned to the exact versions resolved inside the application image
+# (Python 3.13.5, base image elixir:1.20-slim) so every rebuild installs the
+# stack that was verified end to end.
+#
+# Regenerate after upgrading with:
+#   docker run --rm <image> /app/priv/python/.venv/bin/python3 -m pip freeze
+#
+# Direct dependencies. mediapipe pulls in numpy and OpenCV itself, and
+# pose_worker.py imports cv2 directly, so all three are pinned explicitly.
+mediapipe==1.2.2
+numpy==2.5.4
+opencv-contrib-python==5.0.0.93
+
+# Transitive dependencies, pinned for reproducible image builds.
+absl-py==2.5.1
+certifi==2026.10.23
+cffi==2.1.1
+contourpy==1.4.0
+cycler==0.12.1
+flatbuffers==25.12.19
+fonttools==4.68.0
+kiwisolver==1.5.1
+matplotlib==3.11.2
+packaging==26.3
+pillow==13.0.0
+pycparser==3.12
+pyparsing==3.3.3
+python-dateutil==4.0.0
+sounddevice==0.5.6
+tzdata==2026.6
+

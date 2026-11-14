@@ -1,0 +1,92 @@
+export default class EntryUploader {
+  constructor(entry, config, liveSocket) {
+    const { chunk_size, chunk_timeout } = config;
+    this.liveSocket = liveSocket;
+    this.entry = entry;
+    this.offset = 0;
+    this.chunkSize = chunk_size;
+    this.chunkTimeout = chunk_timeout;
+    this.chunkTimer = null;
+    this.errored = false;
+    this.uploadChannel = liveSocket.channel(`lvu:${entry.ref}`, {
+      token: entry.metadata(),
+    });
+  }
+
+  error(reason) {
+    if (this.errored) {
+      return;
+    }
+    // A scheduled submit locks the upload input, so cancel it directly instead
+    // of waiting for the input hook to observe the error diff.
+    this.entry.view.cancelSubmit(this.entry.fileEl.form, {
+      reason: "upload-failed",
+      inputs: [this.entry.fileEl],
+    });
+    this.uploadChannel.leave();
+    this.errored = true;
+    this.chunkTimer != null && clearTimeout(this.chunkTimer);
+    if (reason === "writer_error") {
+      // The server already recorded the exact writer failure and retained the
+      // entry. Complete the failed entry to release the form, without sending
+      // a second, generic client error progress event.
+      this.entry.fail(reason, false);
+      return;
+    }
+    this.entry.error(reason);
+  }
+
+  upload() {
+    this.uploadChannel.onError((reason) => this.error(reason));
+    this.uploadChannel
+      .join()
+      .receive("ok", (_data) => this.readNextChunk())
+      .receive("error", ({ reason }) => this.error(reason));
+  }
+
+  isDone() {
+    return this.offset >= this.entry.file.size;
+  }
+
+  readNextChunk() {
+    const reader = new window.FileReader();
+    const blob = this.entry.file.slice(
+      this.offset,
+      this.chunkSize + this.offset,
+    );
+    const onError = () => {
+      this.entry.view.logError(
+        "upload.read-failed",
+        "Read error: " + (reader.error || "aborted"),
+        { entry: this.entry, offset: this.offset },
+      );
+      this.error("failed");
+    };
+    reader.onerror = onError;
+    reader.onabort = onError;
+    reader.onload = (e) => {
+      this.offset += /** @type {ArrayBuffer} */ (e.target.result).byteLength;
+      this.pushChunk(/** @type {ArrayBuffer} */ (e.target.result));
+    };
+    reader.readAsArrayBuffer(blob);
+  }
+
+  pushChunk(chunk) {
+    if (!this.uploadChannel.isJoined()) {
+      return;
+    }
+    this.uploadChannel
+      .push("chunk", chunk, this.chunkTimeout)
+      .receive("ok", () => {
+        this.entry.progress((this.offset / this.entry.file.size) * 100);
+        if (!this.isDone()) {
+          this.chunkTimer = setTimeout(
+            () => this.readNextChunk(),
+            this.liveSocket.getLatencySim() || 0,
+          );
+        }
+      })
+      .receive("error", ({ reason }) => this.error(reason))
+      .receive("timeout", () => this.error("timeout"));
+  }
+}

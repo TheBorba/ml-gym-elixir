@@ -1,0 +1,49 @@
+services:
+  postgres:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: my_app
+      POSTGRES_PASSWORD: change-me
+      POSTGRES_DB: my_app_dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U my_app -d my_app_dev"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # Everything runs in this container: the Phoenix app AND the MediaPipe
+  # Python worker (via the venv baked into the image at
+  # /app/priv/python/.venv). Nothing is executed on the host.
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.builder
+    environment:
+      - MIX_ENV=dev
+      - DATABASE_URL=ecto://my_app:change-me@postgres/my_app_dev
+      - PHX_HOST=localhost
+      - PHX_PORT=4000
+      - PHX_SIGNING_SALT=default_salt
+      - SECRET_KEY_BASE=dev_only_secret_key_base_docker_compose_0123456789
+      - PYTHON_BIN=/app/priv/python/.venv/bin/python3
+      - UPLOAD_DIR=/app/priv/uploads
+    volumes:
+      # Downloaded .task model bundles (see priv/models/README.md)
+      - ./priv/models:/app/priv/models:ro
+      # Persist uploads across restarts
+      - uploads:/app/priv/uploads
+    ports:
+      - "4000:4000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+  uploads:
+
+

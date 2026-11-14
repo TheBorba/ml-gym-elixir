@@ -1,0 +1,173 @@
+# Changelog for Tzdata
+
+## [Unreleased]
+
+## [1.2.2] - 2026-09-25
+
+### Fixed
+
+- Fix a pattern match bug in `latest_file_size/1` that caused the HEAD
+  request used to check the latest tzdata file size to always fail,
+  silently falling back to a GET request instead. (Matt Wynne)
+- Fix a compile warning about an unused `require Logger` when Hackney
+  isn't available. (Michel Boaventura)
+
+## [1.2.1] - 2026-09-15
+
+### Fixed
+
+- Fix a compile error on Erlang/OTP 28+ caused by regexes compiled into
+  module attributes in the leap seconds parser. (Thijs Klaver)
+
+## [1.2.0] - 2026-09-13
+
+### Added
+
+- Parse the IANA `factory` source file, adding the placeholder `Factory`
+  zone (previously omitted) to the zone list.
+
+### Changed
+
+- Now requires Elixir 1.12 or greater instead of 1.9 or greater.
+- Hackney is no longer a mandatory dependency. When `:http_client` isn't
+  configured explicitly, Tzdata now automatically picks the best available
+  HTTP client: the built-in `:httpc`, verifying certificates via
+  `:public_key.cacerts_get/0` (the OS-trusted CA bundle), when that's
+  usable (Erlang/OTP 25+); otherwise Hackney, if it's present as a
+  dependency; otherwise `:httpc` is still used but automatic updates are
+  skipped with a warning rather than downloading without verification. See
+  the README's "HTTP client and security" section for details.
+- Debug log messages for downloading new data now include the name of the
+  HTTP client in use (e.g. `httpc` or `hackney`).
+- tzdata release version shipped with this library is now 2026d instead of 2026c.
+
+### Deprecated
+
+- Hackney support is deprecated and will be removed in a future release.
+  Using `Tzdata.HTTPClient.Hackney` now logs a warning. It is strongly
+  recommended to use Erlang/OTP 25 or higher, where the built-in `:httpc`
+  client is used by default and no HTTP client dependency is needed.
+
+### Fixed
+
+- Fix incorrect or spurious historical time zone periods (wrong or blank abbreviations before a zone's earliest rule, and redundant zero-effect periods at zone-line boundaries) affecting many zones, including America/Regina, America/Chicago, America/Edmonton, America/Inuvik, Antarctica/Troll, America/Chihuahua, America/Argentina/Buenos_Aires, Europe/Dublin, Europe/Vienna, Europe/Istanbul, and most former Soviet zones.
+
+## [1.1.5] - 2026-09-06
+
+### Fixed
+
+- Fix Africa/Casablanca and Africa/El_Aaiun switching to permanent UTC six
+  months early in tzdata 2026c, and similar errors in some historical
+  transitions, caused by a zone line whose rules end before the line does.
+
+### Changed
+
+- tzdata release version shipped with this library is now 2026c instead of 2026b.
+- Now supports version 4.x of hackney as well as 1.x
+
+## [1.1.4] - 2026-06-22
+
+### Fixed
+
+- Fix :calendar crash on OTP 29 for IANA "24:00" transition times (Patrick Olsen)
+
+### Changed
+
+- tzdata release version shipped with this library is now 2026b instead of 2025a.
+
+## [1.1.3] - 2025-03-05
+
+### Fixed
+
+- Fix Elixir compiler warnings for decreasing ranges without explicit steps (Christoph Grothaus)
+- Fix various Elixir compiler warnings (Thomas Cioppettini)
+
+### Changed
+
+- Now requires Elixir 1.9 or greater instead of 1.8 or greater.
+- tzdata release version shipped with this library is now 2025a instead of 2024b.
+
+## [1.1.2] - 2024-09-09
+
+### Fixed
+
+- Can handle months being spelled out instead of abbreveated to 3 letters as happened in one place in 2024b. (Moxley Stratton)
+
+### Changed
+
+- tzdata release version shipped with this library is now 2024b instead of 2021e.
+
+## [1.1.1] - 2021-10-31
+
+### Fixed
+
+- Fix period overlaps for certain zones (Jarrod Moldrich)
+
+### Changed
+
+- tzdata release version shipped with this library is now 2021e instead of 2020e.
+- Call :rand instead of :random for avoiding warnings
+
+## [1.1.0] - 2020-12-26
+
+### Fixed
+
+- Fixed Elixir 1.11 compilation warnings. (Ho-Yon Mak)
+
+### Changed
+
+- Increased hackney dependency version requirement to ~> 1.17
+- tzdata release version shipped with this library is now 2020e instead of 2020d.
+
+## [1.0.5] - 2020-11-27
+
+### Fixed
+
+- Fix issues with Tzdata.TimeZoneDatabase during gaps (Benjamin Milde)
+
+### Changed
+
+- tzdata release version shipped with this library is now 2020d instead of 2019c.
+
+## [1.0.4] - 2020-10-07
+
+### Fixed
+
+- Fix warning in Elixir 1.11 (Thanabodee Charoenpiriyakij)
+
+## [1.0.3] - 2019-12-19
+
+### Changed
+
+- tzdata release version shipped with this library is now 2019c instead of 2019a.
+
+### Fixed
+
+- Hackney was not set as an "application" in non-dev environments in 1.0.2 and could cause errors in updating.
+
+## [1.0.2] - 2019-10-17
+
+### Fixed
+
+- Avoid creating atoms for non-existing time zone names.
+
+## [1.0.1] - 2019-07-01
+
+### Fixed
+
+- Fixed: could not process 2019b release. Error related to `first_matching_weekday_in_month(1932, 4, 7, [])`.
+
+## [1.0.0] - 2019-04-23
+
+### Changed
+
+- Elixir version requirement increased to Elixir 1.8+
+- ETS table normalization for performance improvements over 0.5.x releases
+- .ets release files now have contents with a different structure
+- Because of the different structre the .ets files now have a different file ending. E.g.: 2019a.v2.ets
+
+### Added
+
+- Tzdata.TimeZoneDatabase module that implements the Calendar.TimeZoneDatabase behaviour.
+
+Changelog for v0.5.x releases can be found [in the pre_1-8 branch](https://github.com/lau/tzdata/blob/pre_1-8/CHANGELOG.md).
